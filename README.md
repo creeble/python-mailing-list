@@ -19,13 +19,13 @@ The configuration files start with the mailing list address (without domain).  S
 - mylist.recipients
 - mylist.listname
 
-The _.senders_ and _.recipients_ files contain just a list of email addresses, one per line.  The email addresses are parsed with python's `email.utils.parseaddr()` function, so can be like `Real Name <real.name@domain.com>` or `<real.name@domain.com>` or just `real.name@domain.com`.
+The _.senders_ and _.recipients_ files contain just a list of email addresses, one per line.  The email addresses are parsed with python's `email.utils.parseaddr()` function, so they can be like `Real Name <real.name@domain.com>` or `<real.name@domain.com>` or just `real.name@domain.com`.
 
 The _.listname_ file contains two lines:
 The first line is the name of the mailing list, which is prepended to the Subject line with brackets.
 The second line is the email address of an administrator, which is used for bounces (for incoming addresses that aren't in the _mylist.senders_ file).
 
-The simplistic nature of this engine is so to make it easy to import a list from an outside source, like a database of users, and make it available as a conventional "announcement" list.
+The simplistic nature of this engine is to make it easy to import a list from an outside source, like a database of users, and make it available as a conventional "announcement" list.
 
 The reply address of the list is the sender.
 
