@@ -10,9 +10,17 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 
-ROOT_PATH = '/home/gus'
-LIST_DIR  = ROOT_PATH + '/lists'
-LOG_FILE_PATH = ROOT_PATH + '/logs/email.log'
+#ROOT_PATH = '/home/gus'
+#LIST_DIR  = ROOT_PATH + '/lists'
+#LOG_FILE_PATH = ROOT_PATH + '/logs/email.log'
+
+# required
+LIST_DIR = sys.argv[1]
+# optional
+LOG_FILE_PATH = None
+if len(sys.argv) > 2:
+        LOG_FILE_PATH = sys.argv[2]
+
 
 # List name is taken from To: address; i.e., peeps@DOMAIN == peeps
 # LIST_DIR/peeps.senders are allowed senders
