@@ -12,14 +12,13 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 
-#ROOT_PATH = '/home/gus'
-#LIST_DIR  = ROOT_PATH + '/lists'
-#LOG_FILE_PATH = ROOT_PATH + '/logs/email.log'
-
 # required
 LIST_DIR = sys.argv[1]
-# optional
+# optional, appears in procmail.log typically if None
 LOG_FILE_PATH = None
+# don't log at all
+LOGGING = False
+
 if len(sys.argv) > 2:
         LOG_FILE_PATH = sys.argv[2]
 
@@ -31,18 +30,19 @@ if len(sys.argv) > 2:
 #   line 1 is a list name, which gets prepended to the subject [In Braces]
 #   line 2 is the administrator's email address, which is used for bounces
 
-logging.basicConfig(filename=LOG_FILE_PATH, level=logging.DEBUG)
+LOGGING and logging.basicConfig(filename=LOG_FILE_PATH, level=logging.DEBUG)
 
 # debugging
 #with open('msg.txt') as x: full_msg = x.read()
 full_msg = sys.stdin.read()
 msg = email.message_from_string(full_msg)
 #logging.info(full_msg)
-logging.info("From:  " + msg['from'])
-logging.info("Subject: " + msg['subject'])
-
 # Set the list address and domain from the To: address
 name,addr = email.utils.parseaddr(msg['to'])
+logging.info("From:  " + msg['from'])
+logging.info("Subject: " + msg['subject'])
+logging.info("List: " + name)
+
 List_address, Domain = [a.lower() for a in addr.split("@")]
 
 def get_allowed():
