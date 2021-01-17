@@ -102,9 +102,19 @@ msg['Subject'] = '[' + listname + '] ' + s
 del msg['to']
 msg['to'] = '"{}" <{}@{}>'.format(listname, List_address, Domain)
 
+# It is probably good to delete this header, as it will be incorrect
+# after forwarding, and the forwarder *should* create its own DKIM
+# signature.
+# Note that some mailers will create the WRONG DKIM signature, using
+# the original domain rather than the mailing list domain.  Not much
+# can be done about that here.
+del msg['DKIM-Signature'];
 # and forward.
 for r in recipients:
         # send it
         s = smtplib.SMTP('localhost')
-        s.send_message(msg, to_addrs=r)
+        # Tell the receiving MTA that the message is coming from the
+        # the list address, not the original sender.  This avoids some
+        # level of spam blocking.
+        s.send_message(msg, from_addr=msg['to'], to_addrs=r)
         s.quit
