@@ -13,14 +13,15 @@ from email.mime.base import MIMEBase
 from email import encoders
 
 # required
-LIST_DIR = sys.argv[1]
+LIST_NAME = sys.argv[1].lower()		# listname@domain.com
+LIST_DIR = sys.argv[2]			# where to find the recipient/sender/listname files
 # optional, appears in procmail.log typically if None
 LOG_FILE_PATH = None
 # don't log at all
 LOGGING = False
 
-if len(sys.argv) > 2:
-        LOG_FILE_PATH = sys.argv[2]
+if len(sys.argv) > 3:
+        LOG_FILE_PATH = sys.argv[3]
 
 
 # List name is taken from To: address; i.e., peeps@DOMAIN == peeps
@@ -37,11 +38,12 @@ LOGGING and logging.basicConfig(filename=LOG_FILE_PATH, level=logging.DEBUG)
 full_msg = sys.stdin.read()
 msg = email.message_from_string(full_msg)
 #logging.info(full_msg)
-# Set the list address and domain from the To: address
-name,addr = email.utils.parseaddr(msg['to'])
+
+name,addr = email.utils.parseaddr(LIST_NAME)
 logging.info("From:  " + msg['from'])
 logging.info("Subject: " + msg['subject'])
-logging.info("List: " + name)
+logging.info("To: " + msg['to'])
+logging.info("List: " + LIST_NAME)
 
 List_address, Domain = [a.lower() for a in addr.split("@")]
 

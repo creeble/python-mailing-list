@@ -6,10 +6,12 @@ You would typically configure a specific address for the mailing list (like `myl
 in that user's home dir to call the script, e.g.:
 <pre>
 :0
-| /usr/bin/python3 mailing-list.py /path/to/listdir
+| /usr/bin/python3 mailing-list.py mylist@domain.com /path/to/listdir
 </pre>
 
-It uses three configuration files per mailing list, found in the dir pointed to by the first arg:
+The first two parameters are required: the listname (the full email address of the list), and the directory where the list files reside.
+
+It uses three configuration files per mailing list, found in the dir pointed to by the second arg:
 - An _allowed users_ file
 - A _list name_ file
 - A _recipients_ file
