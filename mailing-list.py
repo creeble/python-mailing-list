@@ -11,6 +11,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
+import re
 
 # required
 LIST_NAME = sys.argv[1].lower()		# listname@domain.com
@@ -21,6 +22,7 @@ LOG_FILE_PATH = None
 LOGGING = False
 
 if len(sys.argv) > 3:
+        LOGGING = True
         LOG_FILE_PATH = sys.argv[3]
 
 
@@ -105,8 +107,10 @@ reject = set([x[1].lower() for x in all_to if x[1].lower() != addr])
 
 # fixup subject - critical to delete first! (yahoo.com in particular doesn't like two)
 s = msg['Subject']
-del msg['Subject']
-msg['Subject'] = '[' + listname + '] ' + s
+m = re.search("\[{}\]".format(listname), s)
+if not m:
+        del msg['Subject']
+        msg['Subject'] = '[' + listname + '] ' + s
 
 # also to: name / address
 # Gmail displays this by parsing a "first name" from the list name, but whatever.
