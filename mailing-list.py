@@ -36,8 +36,11 @@ if len(sys.argv) > 3:
 LOGGING and logging.basicConfig(filename=LOG_FILE_PATH, level=logging.DEBUG)
 
 # debugging
-#with open('msg.txt') as x: full_msg = x.read()
-full_msg = sys.stdin.read()
+if len(sys.argv) > 4:
+        with open(sys.argv[4]) as x: full_msg = x.read()
+else:
+        full_msg = sys.stdin.read()
+
 msg = email.message_from_string(full_msg)
 #logging.info(full_msg)
 
@@ -104,6 +107,7 @@ recipients = get_recipients()
 # is *always* a 'to' address...
 all_to = email.utils.getaddresses(msg.get_all('to', []) + msg.get_all('cc', []) + msg.get_all('bcc', []))
 reject = set([x[1].lower() for x in all_to if x[1].lower() != addr])
+logging.info(reject)
 
 # fixup subject - critical to delete first! (yahoo.com in particular doesn't like two)
 s = msg['Subject']
@@ -129,7 +133,7 @@ for r in recipients:
         # don't send if in reject list
         n, a = email.utils.parseaddr(r)
         if a.lower() in reject:
-                next
+                continue
         # send it
         s = smtplib.SMTP('localhost')
         # Tell the receiving MTA that the message is coming from the
