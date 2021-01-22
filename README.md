@@ -32,3 +32,5 @@ The simplistic nature of this engine is to make it easy to import a list from an
 The reply address of the list is the sender.
 
 A "discussion"-type list is done by simply having the same email addresses in both _.senders_ and _.recipients_; i.e., anyone on the list can send an email to the entire list.
+
+Some filtering is performed to attempt to minimize duplicate messages.  For example, if the list address is Cc'd (as might happen if someone does a "reply all" to a message), then the person getting the reply should only receive one message, not two.
