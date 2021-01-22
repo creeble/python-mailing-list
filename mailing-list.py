@@ -94,6 +94,15 @@ if mfrom not in allowed:
 
 recipients = get_recipients()
 
+# create a normalized list of "to" addresses, including
+# cc and bcc, as a "reject" list for recipients (since they're already
+# getting the message).  This is mostly so that a "reply all" doesn't
+# create an annoying duplicate message.
+# Note that the following lines would fail if it weren't for the fact that
+# is *always* a 'to' address...
+all_to = email.utils.getaddresses(msg.get_all('to', []) + msg.get_all('cc', []) + msg.get_all('bcc', []))
+reject = set([x[1].lower() for x in all_to if x[1].lower() != addr])
+
 # fixup subject - critical to delete first! (yahoo.com in particular doesn't like two)
 s = msg['Subject']
 del msg['Subject']
@@ -111,8 +120,12 @@ msg['to'] = '"{}" <{}@{}>'.format(listname, List_address, Domain)
 # the original domain rather than the mailing list domain.  Not much
 # can be done about that here.
 del msg['DKIM-Signature'];
-# and forward.
+
 for r in recipients:
+        # don't send if in reject list
+        n, a = email.utils.parseaddr(r)
+        if a.lower() in reject:
+                next
         # send it
         s = smtplib.SMTP('localhost')
         # Tell the receiving MTA that the message is coming from the
