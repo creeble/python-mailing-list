@@ -45,7 +45,7 @@ msg = email.message_from_string(full_msg)
 #logging.info(full_msg)
 
 name,addr = email.utils.parseaddr(LIST_NAME)
-logging.info("From:  " + msg['from'])
+logging.info("-->From:  " + msg['from'])
 logging.info("Subject: " + msg['subject'])
 logging.info("To: " + msg['to'])
 logging.info("List: " + LIST_NAME)
@@ -107,7 +107,7 @@ recipients = get_recipients()
 # is *always* a 'to' address...
 all_to = email.utils.getaddresses(msg.get_all('to', []) + msg.get_all('cc', []) + msg.get_all('bcc', []))
 reject = set([x[1].lower() for x in all_to if x[1].lower() != addr])
-logging.info(reject)
+logging.info(str(reject))
 
 # fixup subject - critical to delete first! (yahoo.com in particular doesn't like two)
 s = msg['Subject']
@@ -128,6 +128,14 @@ msg['to'] = '"{}" <{}@{}>'.format(listname, List_address, Domain)
 # the original domain rather than the mailing list domain.  Not much
 # can be done about that here.
 del msg['DKIM-Signature'];
+# and maybe these, re-matched...
+del_keys_re = ('x-barracuda', 'x-spam')
+
+for k in msg.keys():
+    for match in [re.search("^{}".format(x), k.lower()) for x in del_keys_re]:
+        if match is not None:
+            logging.info("Deleting: {}".format(k))
+            del msg[k]
 
 for r in recipients:
         # don't send if in reject list
