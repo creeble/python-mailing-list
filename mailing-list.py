@@ -53,7 +53,7 @@ logging.info("List: " + LIST_NAME)
 List_address, Domain = [a.lower() for a in addr.split("@")]
 
 def get_allowed():
-        with open(LIST_DIR + '/' + List_address + '.senders') as f:
+        with open(LIST_DIR + '/' + List_address + '.senders', encoding="utf-8") as f:
                 allowed = f.readlines()
         ret = [email.utils.parseaddr(x) for x in allowed]
         return [x[1] for x in ret]
@@ -77,13 +77,13 @@ def not_allowed(address, admin, msg):
         s.quit
 
 def get_recipients():
-        with open(LIST_DIR + '/' + List_address + '.recipients') as f:
+        with open(LIST_DIR + '/' + List_address + '.recipients', encoding="utf-8") as f:
                 recipients = f.readlines()
         # This kills EOL and puts everything in a list of single strings.
         return [email.utils.formataddr(x) for x in [email.utils.parseaddr(y) for y in recipients]]
 
 def get_listname():
-        with open(LIST_DIR + '/' + List_address + '.listname') as f:
+        with open(LIST_DIR + '/' + List_address + '.listname', encoding="utf-8") as f:
                 lname = f.readlines()
         # [list name] in subject, admin address
         return [lname[0].strip(), lname[1].strip()]
